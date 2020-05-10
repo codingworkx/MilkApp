@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "131146910670",
+    "firebase_url": "https://milkapp-ea405.firebaseio.com",
+    "project_id": "milkapp-ea405",
+    "storage_bucket": "milkapp-ea405.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131146910670:android:2c15ef326c0f3d05ecf99f",
+        "android_client_info": {
+          "package_name": "com.milkapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131146910670-hnap1t5tq26p1vlqgvct3eo4ein8on95.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoRB9fFK3oXDZq-CTPFZGz-hAUICcjAGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131146910670-hnap1t5tq26p1vlqgvct3eo4ein8on95.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
