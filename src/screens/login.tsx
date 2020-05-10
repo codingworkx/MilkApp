@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import auth from '@react-native-firebase/auth';
 //@ts-ignore
 import CheckBox from '@react-native-community/checkbox';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TextInput, Text, TouchableOpacity, Keyboard } from 'react-native';
 
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
-import { PushTo } from '../utils/navMethods';
+import { PushTo, SetRoot } from '../utils/navMethods';
 import ScreenNames from '../utils/screenNames';
+import { ValidateEmail, ShowMessage, ValidatePassword } from '../utils/commonMethods';
 
 interface Props {
   componentId: string;
@@ -24,6 +26,21 @@ export default function Login({ componentId }: Props) {
 
   const { email, password, showPass } = values;
 
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  const onAuthStateChanged = (user: any) => {
+    if (user) {
+      const { _user } = user;
+      console.log("_user from Login", _user);
+      if (_user && _user.providerData) {
+        SetRoot(ScreenNames.HOME);
+      }
+    }
+  }
+
   const updateFields = (key: string, value: any) => {
     setValues({
       ...values,
@@ -33,6 +50,32 @@ export default function Login({ componentId }: Props) {
 
   const toSignup = () => {
     PushTo(componentId, ScreenNames.SIGNUP);
+  }
+
+  const submitLogin = () => {
+    Keyboard.dismiss();
+    if (!ValidateEmail(email)) {
+      ShowMessage('Please Enter Valid E-Mail', false);
+      return;
+    }
+    if (!ValidatePassword(password)) {
+      ShowMessage('Password Must be atleast 8 characters', false);
+      return;
+    }
+    loginUser();
+  }
+
+  const loginUser = () => {
+    auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        ShowMessage("Login Success", false);
+      })
+      .catch(error => {
+        if (error.code === 'auth/wrong-password') {
+          ShowMessage("Please enter correct password", false);
+        }
+        console.log("error in user signin", error);
+      });
   }
 
   return (
@@ -64,7 +107,7 @@ export default function Login({ componentId }: Props) {
         </View>
       </View>
       <View style={styles.lowerContainer}>
-        <TouchableOpacity style={styles.loginBtn}>
+        <TouchableOpacity style={styles.loginBtn} onPress={submitLogin}>
           <Text style={styles.loginTxt}>{"Login"}</Text>
         </TouchableOpacity>
         <Text onPress={toSignup} style={styles.signIn}>{"Don't have account? Sign Up"}</Text>
