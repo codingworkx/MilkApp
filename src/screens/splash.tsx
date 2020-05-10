@@ -3,11 +3,11 @@ import { StyleSheet, ImageBackground, View, Animated, Easing } from 'react-nativ
 
 //custom imports below
 import Fonts from '../utils/fonts';
-import { PushTo } from '../utils/navMethods';
+import { SetRoot } from '../utils/navMethods';
 import LocalImages from '../utils/localImages';
 import ScreenNames from '../utils/screenNames';
 
-export default function Splash({ componentId }: any) {
+export default function Splash() {
   let initialVal: Animated.Value = new Animated.Value(0);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function Splash({ componentId }: any) {
     }).start();
 
     setTimeout(() => {
-      PushTo(componentId, ScreenNames.LOGIN);
+      SetRoot(ScreenNames.LOGIN);
     }, 2500);
   }, []);
 

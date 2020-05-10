@@ -7,7 +7,6 @@ import { View, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-nativ
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
 import ScreenNames from '../utils/screenNames';
-import { PushTo } from '../utils/navMethods';
 
 interface Props {
   componentId: string;
@@ -17,22 +16,19 @@ class State {
   email: string = "";
   password: string = "";
   showPass: boolean = false;
+  confirmPassword: string = "";
 }
 
-export default function Login({ componentId }: Props) {
+export default function Signup({ componentId }: Props) {
   const [values, setValues] = useState(new State());
 
-  const { email, password, showPass } = values;
+  const { email, password, showPass, confirmPassword } = values;
 
   const updateFields = (key: string, value: any) => {
     setValues({
       ...values,
       ...{ [key]: value }
     })
-  }
-
-  const toSignup = () => {
-    PushTo(componentId, ScreenNames.SIGNUP);
   }
 
   return (
@@ -50,9 +46,17 @@ export default function Login({ componentId }: Props) {
           maxLength={10}
           value={password}
           style={styles.inputStyle}
-          placeholder="Enter Password"
           secureTextEntry={!showPass}
+          placeholder="Enter New Password"
           onChangeText={(val) => updateFields('password', val)}
+        />
+        <TextInput
+          maxLength={10}
+          value={confirmPassword}
+          style={styles.inputStyle}
+          secureTextEntry={!showPass}
+          placeholder="Enter Confirm Password"
+          onChangeText={(val) => updateFields('confirmPassword', val)}
         />
         <View style={styles.showPassContainer}>
           <CheckBox
@@ -67,7 +71,7 @@ export default function Login({ componentId }: Props) {
         <TouchableOpacity style={styles.loginBtn}>
           <Text style={styles.loginTxt}>{"Login"}</Text>
         </TouchableOpacity>
-        <Text onPress={toSignup} style={styles.signIn}>{"Don't have account? Sign Up"}</Text>
+        <Text style={styles.signIn}>{"Don't have account? Sign Up"}</Text>
       </View>
     </View>
   );
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
 
 
 
-Login.options = {
+Signup.options = {
   topBar: {
     animate: true,
     backButton: { visible: false },
