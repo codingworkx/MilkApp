@@ -1,5 +1,6 @@
 import React from 'react';
 import auth from '@react-native-firebase/auth';
+import { FloatingAction } from "react-native-floating-action";
 import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Image } from 'react-native';
 
 //custom imports below
@@ -9,6 +10,14 @@ import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
 
 const { width, height } = Dimensions.get('window');
+const actions = [
+  {
+    position: 1,
+    text: "Add User",
+    name: "add_user",
+    icon: LocalImages.ADD_USER,
+  }
+];
 
 export default function Home() {
 
@@ -36,9 +45,14 @@ export default function Home() {
     <View style={styles.container}>
       {renderUpper()}
       <View style={styles.lowerContainer}>
-
         <Text onPress={logout}>{"LOGOUT"}</Text>
       </View>
+      <FloatingAction
+        actions={actions}
+        onPressItem={name => {
+          console.warn(`selected button: ${name}`);
+        }}
+      />
     </View>
   );
 }
