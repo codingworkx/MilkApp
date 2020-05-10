@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Navigation } from 'react-native-navigation';
 import { StyleSheet, ImageBackground, View, Animated, Easing } from 'react-native';
 
 //custom imports below
 import Fonts from '../utils/fonts';
+import { PushTo } from '../utils/navMethods';
 import LocalImages from '../utils/localImages';
 import ScreenNames from '../utils/screenNames';
 
@@ -19,7 +19,7 @@ export default function Splash({ componentId }: any) {
     }).start();
 
     setTimeout(() => {
-      Navigation.push(componentId, { component: { name: ScreenNames.LOGIN } })
+      PushTo(componentId, ScreenNames.LOGIN);
     }, 2500);
   }, []);
 
