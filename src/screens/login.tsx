@@ -9,6 +9,12 @@ export default function Login() {
   );
 }
 
+Login.options = {
+  topBar: {
+    visible: false
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

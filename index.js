@@ -1,10 +1,23 @@
-/**
- * @format
- */
+import {Navigation} from 'react-native-navigation';
 
-import {AppRegistry} from 'react-native';
+//custom imprts below
 import App from './src/App';
-import {name as appName} from './app.json';
-import Login from './src/Login';
+import ScreenNames from './src/utils/screenNames';
+import RegisterScreens from './src/utils/registerScreens';
 
-AppRegistry.registerComponent(appName, () => App);
+RegisterScreens();
+Navigation.events().registerAppLaunchedListener(() => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: ScreenNames.SPLASH,
+            },
+          },
+        ],
+      },
+    },
+  });
+});

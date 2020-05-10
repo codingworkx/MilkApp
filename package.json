@@ -7,11 +7,14 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "pods": "cd ios && rm -f Podfile.lock && pod install",
+    "emu": "emulator avd Pixel_2"
   },
   "dependencies": {
     "react": "16.11.0",
-    "react-native": "0.62.2"
+    "react-native": "0.62.2",
+    "react-native-navigation": "^6.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
