@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import auth from '@react-native-firebase/auth';
+import React, { useState, useEffect } from 'react';
 //@ts-ignore
 import CheckBox from '@react-native-community/checkbox';
-import { View, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TextInput, Text, TouchableOpacity, Keyboard } from 'react-native';
 
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
+import { SetRoot } from '../utils/navMethods';
 import ScreenNames from '../utils/screenNames';
-
-interface Props {
-  componentId: string;
-}
+import { ValidateEmail, ShowMessage, ValidatePassword } from '../utils/commonMethods';
 
 class State {
   email: string = "";
@@ -19,16 +18,73 @@ class State {
   confirmPassword: string = "";
 }
 
-export default function Signup({ componentId }: Props) {
+export default function Signup() {
   const [values, setValues] = useState(new State());
 
   const { email, password, showPass, confirmPassword } = values;
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  const onAuthStateChanged = (user: any) => {
+    if (user) {
+      const { _user } = user;
+      console.log("_user", _user);
+      if (_user && _user.providerData) {
+        SetRoot(ScreenNames.HOME);
+      }
+    }
+  }
 
   const updateFields = (key: string, value: any) => {
     setValues({
       ...values,
       ...{ [key]: value }
     })
+  }
+
+  const signIn = () => {
+    SetRoot(ScreenNames.LOGIN);
+  }
+
+  const submitSignUp = () => {
+    Keyboard.dismiss();
+    if (!ValidateEmail(email)) {
+      ShowMessage('Please Enter Valid E-Mail', false);
+      return;
+    }
+    if (!ValidatePassword(password)) {
+      ShowMessage('New Password Must be atleast 8 characters', false);
+      return;
+    }
+    if (!ValidatePassword(confirmPassword)) {
+      ShowMessage('Confirm Password Must be atleast 8 characters', false);
+      return;
+    }
+    if (password.toLowerCase() !== confirmPassword.toLowerCase()) {
+      ShowMessage("Passwords don't match please check!", false);
+      return;
+    }
+    createUser();
+  }
+
+  const createUser = () => {
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        ShowMessage("Signup Success", false);
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          ShowMessage("This Email address is already in use!", false);
+        }
+        if (error.code === 'auth/invalid-email') {
+          ShowMessage("Please Enter Valid E-Mail", false);
+        }
+        console.log("error in user signup", error);
+      });
   }
 
   return (
@@ -68,10 +124,10 @@ export default function Signup({ componentId }: Props) {
         </View>
       </View>
       <View style={styles.lowerContainer}>
-        <TouchableOpacity style={styles.loginBtn}>
-          <Text style={styles.loginTxt}>{"Login"}</Text>
+        <TouchableOpacity style={styles.loginBtn} onPress={submitSignUp}>
+          <Text style={styles.loginTxt}>{"Sign Up"}</Text>
         </TouchableOpacity>
-        <Text style={styles.signIn}>{"Don't have account? Sign Up"}</Text>
+        <Text onPress={signIn} style={styles.signIn}>{"Already have account? Sign In"}</Text>
       </View>
     </View>
   );
@@ -137,8 +193,6 @@ const styles = StyleSheet.create({
   }
 });
 
-
-
 Signup.options = {
   topBar: {
     animate: true,
@@ -148,7 +202,7 @@ Signup.options = {
       color: Colors.WHITE,
       alignment: 'center',
       fontFamily: Fonts.BOLD,
-      text: ScreenNames.LOGIN,
+      text: ScreenNames.SIGNUP,
     },
     background: { color: Colors.THEME }
   }

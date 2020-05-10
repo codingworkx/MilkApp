@@ -6,8 +6,8 @@ import { View, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-nativ
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
-import ScreenNames from '../utils/screenNames';
 import { PushTo } from '../utils/navMethods';
+import ScreenNames from '../utils/screenNames';
 
 interface Props {
   componentId: string;
@@ -132,8 +132,6 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline"
   }
 });
-
-
 
 Login.options = {
   topBar: {

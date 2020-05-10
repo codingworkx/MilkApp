@@ -1,7 +1,6 @@
 import {Navigation} from 'react-native-navigation';
 
 //custom imprts below
-import App from './src/App';
 import ScreenNames from './src/utils/screenNames';
 import RegisterScreens from './src/utils/registerScreens';
 

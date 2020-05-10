@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import auth from '@react-native-firebase/auth';
 import { StyleSheet, ImageBackground, View, Animated, Easing } from 'react-native';
 
 //custom imports below
@@ -11,17 +12,35 @@ export default function Splash() {
   let initialVal: Animated.Value = new Animated.Value(0);
 
   useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     Animated.timing(initialVal, {
       toValue: 1,
       duration: 2000,
       easing: Easing.linear,
       useNativeDriver: true,
     }).start();
-
-    setTimeout(() => {
-      SetRoot(ScreenNames.LOGIN);
-    }, 2500);
+    return subscriber; // unsubscribe on unmount
   }, []);
+
+  const onAuthStateChanged = (user: any) => {
+    if (user) {
+      const { _user } = user;
+      console.log("_user checked on splash", _user);
+      if (_user && _user.providerData) {
+        setTimeout(() => {
+          SetRoot(ScreenNames.HOME);
+        }, 2500);
+      } else {
+        setTimeout(() => {
+          SetRoot(ScreenNames.LOGIN);
+        }, 2500);
+      }
+    } else {
+      setTimeout(() => {
+        SetRoot(ScreenNames.LOGIN);
+      }, 2500);
+    }
+  }
 
   return (
     <ImageBackground source={LocalImages.SPLASH_BG} style={styles.container}
