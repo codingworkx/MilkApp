@@ -32,8 +32,22 @@ const SetRoot = (screenName: string) => {
   });
 }
 
+const ShowOverlay = (screenName: string) => {
+  Navigation.showOverlay({
+    component: {
+      name: screenName,
+      options: {
+        overlay: {
+          interceptTouchOutside: true
+        }
+      }
+    }
+  })
+}
+
 export {
   PushTo,
   SetRoot,
   ShowModal,
+  ShowOverlay
 }

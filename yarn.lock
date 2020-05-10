@@ -5119,6 +5119,11 @@ react-lifecycles-compat@2.0.0:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-2.0.0.tgz#71d9c4cde47114c4102454f76da055c2bc48c948"
   integrity sha512-txfpPCQYiazVdcbMRhatqWKcAxJweUu2wDXvts5/7Wyp6+Y9cHojqXHsLPEckzutfHlxZhG8Oiundbmp8Fd6eQ==
 
+react-native-eventemitter@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-eventemitter/-/react-native-eventemitter-0.0.1.tgz#c9250a1ae2c61a44fe731ffe1463f506294b80be"
+  integrity sha1-ySUKGuLGGkT+cx/+FGP1BilLgL4=
+
 react-native-floating-action@^1.20.0:
   version "1.20.0"
   resolved "https://registry.yarnpkg.com/react-native-floating-action/-/react-native-floating-action-1.20.0.tgz#65a975669e30b16900e095ec1a2448e4ce377869"
