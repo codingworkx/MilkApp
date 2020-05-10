@@ -7,8 +7,8 @@ import { View, StyleSheet, TextInput, Text, TouchableOpacity, Keyboard } from 'r
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
-import { PushTo, SetRoot } from '../utils/navMethods';
 import ScreenNames from '../utils/screenNames';
+import { PushTo, SetRoot } from '../utils/navMethods';
 import { ValidateEmail, ShowMessage, ValidatePassword } from '../utils/commonMethods';
 
 interface Props {
