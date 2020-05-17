@@ -3,7 +3,8 @@ const ScreenNames = {
   LOGIN: 'Login',
   SPLASH: 'Splash',
   SIGNUP: 'Signup',
-  SETTINGS: "Settings"
+  SETTINGS: "Settings",
+  ADD_VENDOR: "AddVendor"
 }
 
 export default ScreenNames;

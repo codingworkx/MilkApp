@@ -9,14 +9,14 @@ import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Image, Alert } fr
 import Colors from '../utils/colors';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
-import { SetRoot, ShowOverlay } from '../utils/navMethods';
+import { SetRoot, ShowOverlay, ShowModal } from '../utils/navMethods';
 
 const { width, height } = Dimensions.get('window');
 const actions = [
   {
     position: 1,
-    text: "Add User",
-    name: "add_user",
+    text: "Add Vendor",
+    name: "add_vendor",
     icon: LocalImages.ADD_USER,
   }
 ];
@@ -49,6 +49,12 @@ export default function Home() {
       .then(() => SetRoot(ScreenNames.LOGIN));
   }
 
+  const onActionBtnPress = (name?: string) => {
+    if (name === "add_vendor") {
+      ShowModal(ScreenNames.ADD_VENDOR);
+    }
+  }
+
   const renderUpper = () => {
     return (
       <View style={styles.upperContainer}>
@@ -71,9 +77,7 @@ export default function Home() {
       </View>
       <FloatingAction
         actions={actions}
-        onPressItem={name => {
-          console.warn(`selected button: ${name}`);
-        }}
+        onPressItem={onActionBtnPress}
       />
     </View>
   );

@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth';
-import React, { useState, useEffect } from 'react';
 //@ts-ignore
 import CheckBox from '@react-native-community/checkbox';
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, Keyboard } from 'react-native';
@@ -22,21 +22,6 @@ export default function Signup() {
   const [values, setValues] = useState(new State());
 
   const { email, password, showPass, confirmPassword } = values;
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
-
-  const onAuthStateChanged = (user: any) => {
-    if (user) {
-      const { _user } = user;
-      console.log("_user", _user);
-      if (_user && _user.providerData) {
-        SetRoot(ScreenNames.HOME);
-      }
-    }
-  }
 
   const updateFields = (key: string, value: any) => {
     setValues({
@@ -75,6 +60,15 @@ export default function Signup() {
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
         ShowMessage("Signup Success", false);
+        auth().onAuthStateChanged((user: any) => {
+          if (user) {
+            const { _user } = user;
+            console.log("_user from Login", _user);
+            if (_user && _user.providerData) {
+              SetRoot(ScreenNames.HOME);
+            }
+          }
+        })
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth';
 //@ts-ignore
 import CheckBox from '@react-native-community/checkbox';
@@ -25,21 +25,6 @@ export default function Login({ componentId }: Props) {
   const [values, setValues] = useState(new State());
 
   const { email, password, showPass } = values;
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
-
-  const onAuthStateChanged = (user: any) => {
-    if (user) {
-      const { _user } = user;
-      console.log("_user from Login", _user);
-      if (_user && _user.providerData) {
-        SetRoot(ScreenNames.HOME);
-      }
-    }
-  }
 
   const updateFields = (key: string, value: any) => {
     setValues({
@@ -69,6 +54,15 @@ export default function Login({ componentId }: Props) {
     auth().signInWithEmailAndPassword(email, password)
       .then(() => {
         ShowMessage("Login Success", false);
+        auth().onAuthStateChanged((user: any) => {
+          if (user) {
+            const { _user } = user;
+            console.log("_user from Login", _user);
+            if (_user && _user.providerData) {
+              SetRoot(ScreenNames.HOME);
+            }
+          }
+        })
       })
       .catch(error => {
         if (error.code === 'auth/wrong-password') {

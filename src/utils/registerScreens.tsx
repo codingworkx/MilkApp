@@ -7,6 +7,7 @@ import Splash from "../screens/splash";
 import Signup from "../screens/signup";
 import ScreenNames from "./screenNames";
 import Settings from "../screens/settings";
+import AddVendor from "../screens/addVendor";
 
 const RegisterScreens = () => {
   Navigation.registerComponent(ScreenNames.HOME, () => Home);
@@ -14,6 +15,7 @@ const RegisterScreens = () => {
   Navigation.registerComponent(ScreenNames.SPLASH, () => Splash);
   Navigation.registerComponent(ScreenNames.SIGNUP, () => Signup);
   Navigation.registerComponent(ScreenNames.SETTINGS, () => Settings);
+  Navigation.registerComponent(ScreenNames.ADD_VENDOR, () => AddVendor);
 }
 
 export default RegisterScreens;
