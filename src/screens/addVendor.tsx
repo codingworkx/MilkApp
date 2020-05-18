@@ -7,6 +7,7 @@ import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
 import { ShowMessage } from '../utils/commonMethods';
 import { Navigation } from 'react-native-navigation';
+import { useSelector } from 'react-redux';
 
 class State {
   name: string = '';
@@ -18,6 +19,8 @@ export default function AddVendor({ componentId }: any) {
   const [values, setValues] = useState(new State());
   const { name, number, address } = values;
 
+  const { uid } = useSelector((state: any) => state.userDataReducer);
+
   const updateFields = (key: string, value: any) => {
     setValues({
       ...values,
@@ -27,7 +30,7 @@ export default function AddVendor({ componentId }: any) {
 
   const addVendor = () => {
     firestore()
-      .collection('Vendors')
+      .collection(`${uid}-Vendors`)
       .add({
         name,
         number,

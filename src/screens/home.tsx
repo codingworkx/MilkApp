@@ -26,17 +26,17 @@ const actions = [
 ];
 
 export default function Home() {
-  const data = useSelector((state: any) => state.userDataReducer);
+  const { uid } = useSelector((state: any) => state.userDataReducer);
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
-  console.log("data", data)
+
   useEffect(() => {
     //event catched for logout user
     EventEmitter.on("logout", showLogoutAlert);
 
     //code to get Vendors data from firebase
     const subscriber = firestore()
-      .collection('Vendors')
+      .collection(`${uid}-Vendors`)
       .onSnapshot(querySnapshot => {
         const local_vendors: any = [];
 
