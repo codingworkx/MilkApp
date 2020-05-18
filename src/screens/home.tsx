@@ -4,15 +4,16 @@ import firestore from '@react-native-firebase/firestore';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
 import { FloatingAction } from "react-native-floating-action";
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Image, Alert, FlatList } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Alert, FlatList } from 'react-native';
 
 //custom imports below
 import Colors from '../utils/colors';
 import Loader from '../components/loader';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
-import { SetRoot, ShowOverlay, ShowModal } from '../utils/navMethods';
 import VendorCard from '../components/vendorCard';
+import { SetRoot, ShowOverlay, ShowModal } from '../utils/navMethods';
+import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 const actions = [
@@ -25,9 +26,10 @@ const actions = [
 ];
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
+  const data = useSelector((state: any) => state.userDataReducer);
   const [vendors, setVendors] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  console.log("data", data)
   useEffect(() => {
     //event catched for logout user
     EventEmitter.on("logout", showLogoutAlert);

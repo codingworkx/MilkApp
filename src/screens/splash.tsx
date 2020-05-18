@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import { StyleSheet, ImageBackground, View, Animated, Easing } from 'react-native';
 
@@ -7,8 +8,10 @@ import Fonts from '../utils/fonts';
 import { SetRoot } from '../utils/navMethods';
 import LocalImages from '../utils/localImages';
 import ScreenNames from '../utils/screenNames';
+import { UPDATE_USER_DATA } from '../utils/constants';
 
 export default function Splash() {
+  const dispatch = useDispatch();
   let initialVal: Animated.Value = new Animated.Value(0);
 
   useEffect(() => {
@@ -27,6 +30,15 @@ export default function Splash() {
       const { _user } = user;
       console.log("_user checked on splash", _user);
       if (_user && _user.providerData) {
+        const { uid } = _user,
+          { email } = _user.providerData[0];
+        dispatch({
+          type: UPDATE_USER_DATA,
+          payload: {
+            uid,
+            email
+          }
+        })
         setTimeout(() => {
           SetRoot(ScreenNames.HOME);
         }, 2500);

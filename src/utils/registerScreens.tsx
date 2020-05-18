@@ -9,13 +9,13 @@ import ScreenNames from "./screenNames";
 import Settings from "../screens/settings";
 import AddVendor from "../screens/addVendor";
 
-const RegisterScreens = () => {
-  Navigation.registerComponent(ScreenNames.HOME, () => Home);
+const RegisterScreens = (Provider: any, store: any) => {
   Navigation.registerComponent(ScreenNames.LOGIN, () => Login);
-  Navigation.registerComponent(ScreenNames.SPLASH, () => Splash);
   Navigation.registerComponent(ScreenNames.SIGNUP, () => Signup);
   Navigation.registerComponent(ScreenNames.SETTINGS, () => Settings);
-  Navigation.registerComponent(ScreenNames.ADD_VENDOR, () => AddVendor);
+  Navigation.registerComponentWithRedux(ScreenNames.HOME, () => Home, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.SPLASH, () => Splash, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.ADD_VENDOR, () => AddVendor, Provider, store);
 }
 
 export default RegisterScreens;
