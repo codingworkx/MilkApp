@@ -37,10 +37,13 @@ export default function AddVendor({ componentId }: any) {
         address
       })
       .then(() => {
-        Navigation.pop(componentId);
+        ShowMessage("Vendor Added Successfully", false)
+        setTimeout(() => {
+          Navigation.pop(componentId);
+        }, 1000);
       })
       .catch(() => {
-        ShowMessage("Some Problem Please Check After Some Time!")
+        ShowMessage("Some Problem Please Check After Some Time!", false)
       });
   }
 

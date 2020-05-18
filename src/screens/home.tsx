@@ -83,7 +83,6 @@ export default function Home({ componentId }: any) {
     }
   }
 
-  console.log("vendors", vendors)
   const renderUpper = () => {
     return (
       <View style={styles.upperContainer}>
@@ -104,7 +103,13 @@ export default function Home({ componentId }: any) {
         <FlatList
           data={vendors}
           keyExtractor={(item: any) => item.key}
-          renderItem={({ item }: any) => <VendorCard {...item} componentId={componentId} />}
+          renderItem={({ item }: any) => {
+            let { key, name, address, number } = item;
+            return (
+              <VendorCard vendor_key={key} name={name} address={address}
+                number={number} componentId={componentId} />
+            );
+          }}
         />
       </View>
     );

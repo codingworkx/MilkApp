@@ -1,9 +1,8 @@
 import { Dimensions } from "react-native";
 import { Navigation } from "react-native-navigation";
-const { height } = Dimensions.get('window');
 
-const PushTo = (componentId: string, screenName: string) => {
-  Navigation.push(componentId, { component: { name: screenName } })
+const PushTo = (componentId: string, screenName: string, passedProps: any = {}) => {
+  Navigation.push(componentId, { component: { name: screenName, passProps: passedProps } })
 }
 
 const ShowModal = (screenName: string) => {
