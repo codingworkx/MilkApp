@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
+import React, { useEffect, useState } from 'react';
+import firestore from '@react-native-firebase/firestore';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
 import { FloatingAction } from "react-native-floating-action";
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Image, Alert, FlatList } from 'react-native';
 
 //custom imports below
 import Colors from '../utils/colors';
+import Loader from '../components/loader';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
 import { SetRoot, ShowOverlay, ShowModal } from '../utils/navMethods';
+import VendorCard from '../components/vendorCard';
 
 const { width, height } = Dimensions.get('window');
 const actions = [
@@ -22,9 +25,32 @@ const actions = [
 ];
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
+    //event catched for logout user
     EventEmitter.on("logout", showLogoutAlert);
+
+    //code to get Vendors data from firebase
+    const subscriber = firestore()
+      .collection('Vendors')
+      .onSnapshot(querySnapshot => {
+        const local_vendors: any = [];
+
+        querySnapshot.forEach(documentSnapshot => {
+          local_vendors.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        setVendors(local_vendors);
+        setLoading(false);
+      });
+
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
   }, []);
 
   const showLogoutAlert = () => {
@@ -55,6 +81,7 @@ export default function Home() {
     }
   }
 
+  console.log("vendors", vendors)
   const renderUpper = () => {
     return (
       <View style={styles.upperContainer}>
@@ -69,16 +96,27 @@ export default function Home() {
     );
   }
 
+  const renderVendors = () => {
+    return (
+      <View style={styles.lowerContainer}>
+        <FlatList
+          data={vendors}
+          keyExtractor={(item: any) => item.key}
+          renderItem={({ item }: any) => <VendorCard {...item} />}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {renderUpper()}
-      <View style={styles.lowerContainer}>
-        <Text onPress={logout}>{"LOGOUT"}</Text>
-      </View>
+      {renderVendors()}
       <FloatingAction
         actions={actions}
         onPressItem={onActionBtnPress}
       />
+      {loading && <Loader />}
     </View>
   );
 }
@@ -110,9 +148,9 @@ const styles = StyleSheet.create({
   lowerContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     paddingTop: width / 1.7,
-    backgroundColor: Colors.THEME
+    justifyContent: 'center',
+    backgroundColor: Colors.WHITE
   },
   bgImage: {
     width,
