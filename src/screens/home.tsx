@@ -21,7 +21,15 @@ const actions = [
     position: 1,
     text: "Add Vendor",
     name: "add_vendor",
+    color: Colors.THEME,
     icon: LocalImages.ADD_USER,
+  },
+  {
+    position: 1,
+    text: "Calculate",
+    name: "calculate",
+    color: Colors.THEME,
+    icon: LocalImages.CALCULATE,
   }
 ];
 
@@ -121,6 +129,7 @@ export default function Home({ componentId }: any) {
       {renderVendors()}
       <FloatingAction
         actions={actions}
+        color={Colors.THEME}
         onPressItem={onActionBtnPress}
       />
       {loading && <Loader />}
