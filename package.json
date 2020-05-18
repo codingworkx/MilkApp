@@ -9,12 +9,13 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pods": "cd ios && rm -f Podfile.lock && pod install",
-    "emu": "emulator avd Pixel_2"
+    "emu": "emulator -avd Pixel_2"
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.3.0",
-    "@react-native-firebase/app": "^6.7.1",
+    "@react-native-firebase/app": "^7.0.1",
     "@react-native-firebase/auth": "^6.7.1",
+    "@react-native-firebase/firestore": "^7.0.1",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-eventemitter": "^0.0.1",

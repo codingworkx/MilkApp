@@ -12,7 +12,7 @@ Navigation.events().registerAppLaunchedListener(() => {
         children: [
           {
             component: {
-              name: ScreenNames.ADD_VENDOR,
+              name: ScreenNames.SPLASH,
             },
           },
         ],

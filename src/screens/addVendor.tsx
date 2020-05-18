@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import firestore from '@react-native-firebase/firestore';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, Keyboard } from 'react-native';
 
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
 import { ShowMessage } from '../utils/commonMethods';
+import { Navigation } from 'react-native-navigation';
 
 class State {
   name: string = '';
@@ -12,7 +14,7 @@ class State {
   address: string = '';
 }
 
-export default function AddVendor() {
+export default function AddVendor({ componentId }: any) {
   const [values, setValues] = useState(new State());
   const { name, number, address } = values;
 
@@ -24,7 +26,19 @@ export default function AddVendor() {
   }
 
   const addVendor = () => {
-    console.warn("Add Vendor")
+    firestore()
+      .collection('Vendors')
+      .add({
+        name,
+        number,
+        address
+      })
+      .then(() => {
+        Navigation.dismissModal(componentId);
+      })
+      .catch(() => {
+        ShowMessage("Some Problem Please Check After Some Time!")
+      });
   }
 
   const submitAddVendor = () => {
