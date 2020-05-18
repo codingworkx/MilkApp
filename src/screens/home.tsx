@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
@@ -12,8 +13,7 @@ import Loader from '../components/loader';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
 import VendorCard from '../components/vendorCard';
-import { SetRoot, ShowOverlay, ShowModal } from '../utils/navMethods';
-import { useSelector } from 'react-redux';
+import { SetRoot, ShowOverlay, PushTo } from '../utils/navMethods';
 
 const { width, height } = Dimensions.get('window');
 const actions = [
@@ -25,7 +25,7 @@ const actions = [
   }
 ];
 
-export default function Home() {
+export default function Home({ componentId }: any) {
   const { uid } = useSelector((state: any) => state.userDataReducer);
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +79,7 @@ export default function Home() {
 
   const onActionBtnPress = (name?: string) => {
     if (name === "add_vendor") {
-      ShowModal(ScreenNames.ADD_VENDOR);
+      PushTo(componentId, ScreenNames.ADD_VENDOR);
     }
   }
 
@@ -104,7 +104,7 @@ export default function Home() {
         <FlatList
           data={vendors}
           keyExtractor={(item: any) => item.key}
-          renderItem={({ item }: any) => <VendorCard {...item} />}
+          renderItem={({ item }: any) => <VendorCard {...item} componentId={componentId} />}
         />
       </View>
     );

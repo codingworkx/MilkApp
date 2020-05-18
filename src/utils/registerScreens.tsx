@@ -8,6 +8,7 @@ import Signup from "../screens/signup";
 import ScreenNames from "./screenNames";
 import Settings from "../screens/settings";
 import AddVendor from "../screens/addVendor";
+import AddSample from "../screens/addSample";
 
 const RegisterScreens = (Provider: any, store: any) => {
   Navigation.registerComponent(ScreenNames.LOGIN, () => Login);
@@ -15,6 +16,7 @@ const RegisterScreens = (Provider: any, store: any) => {
   Navigation.registerComponent(ScreenNames.SETTINGS, () => Settings);
   Navigation.registerComponentWithRedux(ScreenNames.HOME, () => Home, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.SPLASH, () => Splash, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.ADD_SAMPLE, () => AddSample, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.ADD_VENDOR, () => AddVendor, Provider, store);
 }
 

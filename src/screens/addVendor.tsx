@@ -37,7 +37,7 @@ export default function AddVendor({ componentId }: any) {
         address
       })
       .then(() => {
-        Navigation.dismissModal(componentId);
+        Navigation.pop(componentId);
       })
       .catch(() => {
         ShowMessage("Some Problem Please Check After Some Time!")
@@ -103,7 +103,7 @@ export default function AddVendor({ componentId }: any) {
 AddVendor.options = {
   topBar: {
     animate: true,
-    backButton: { visible: false },
+    backButton: { color: Colors.WHITE },
     title: {
       fontSize: 20,
       text: "Add Vendor",

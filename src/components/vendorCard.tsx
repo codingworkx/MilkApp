@@ -4,6 +4,8 @@ import { View, StyleSheet, Dimensions, Image, Text, TouchableOpacity } from 'rea
 //custom imports below
 import Colors from '../utils/colors';
 import LocalImages from '../utils/localImages';
+import { ShowModal, PushTo } from '../utils/navMethods';
+import ScreenNames from '../utils/screenNames';
 
 const { width } = Dimensions.get('window');
 
@@ -11,9 +13,10 @@ interface Props {
   name: string;
   number: string;
   address: string;
+  componentId: string;
 }
 
-export default function VendorCard({ name, address, number }: Props) {
+export default function VendorCard({ name, address, number, componentId }: Props) {
   const renderImage = () => {
     return (
       <View style={styles.imgContainer}>
@@ -47,7 +50,8 @@ export default function VendorCard({ name, address, number }: Props) {
   }
 
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={0.5}>
+    <TouchableOpacity style={styles.container} activeOpacity={0.5}
+      onPress={() => PushTo(componentId, ScreenNames.ADD_SAMPLE)}>
       {renderImage()}
       {renderDetails()}
     </TouchableOpacity>
