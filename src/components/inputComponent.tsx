@@ -96,9 +96,11 @@ class TextFieldHolder extends Component<TextFieldHolderProps, TextFieldHolderSta
 interface Props {
   label: string;
   value: string;
+  extraStyle?: any;
   keyboardType?: any;
   maxLength?: number;
   placeholder: string;
+  isPointerNone?: boolean;
   onInputChange: Function;
 }
 
@@ -108,6 +110,10 @@ interface State {
 
 export default class InputComponent extends Component<Props, State> {
 
+  public static defaultProps: Partial<Props> = {
+    isPointerNone: false
+  };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -116,9 +122,10 @@ export default class InputComponent extends Component<Props, State> {
   }
 
   render() {
-    const { value } = this.props;
+    const { value, extraStyle, maxLength, keyboardType } = this.props;
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, extraStyle]}
+        pointerEvents={this.props.isPointerNone ? "none" : "auto"}>
         <View style={styles.viewContainer}>
           <View style={styles.fieldContainer}>
             <FloatingLabel visible={value.length > 0}>
@@ -128,19 +135,19 @@ export default class InputComponent extends Component<Props, State> {
               <TextInput {...this.props}
                 ref='basicRef'
                 value={value}
+                maxLength={maxLength}
                 style={styles.valueText}
+                keyboardType={keyboardType}
                 placeholderTextColor={'#fff'}
                 onFocus={() => this.setFocus()}
-                maxLength={this.props.maxLength}
                 onBlur={() => this.unsetFocus()}
                 underlineColorAndroid="transparent"
-                keyboardType={this.props.keyboardType}
                 onChangeText={(value) => this.setText(value)}
               />
             </TextFieldHolder>
           </View>
         </View>
-      </View >
+      </View>
     );
   }
 
