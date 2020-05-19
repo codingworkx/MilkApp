@@ -25,12 +25,22 @@ export default function VendorActions({ componentId }: any) {
     Navigation.dismissOverlay(componentId);
   }
 
+  const addSample = () => {
+    setTimeout(() => {
+      EventEmitter.emit('add_sample');
+    }, 100);
+    Navigation.dismissOverlay(componentId);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <View style={styles.btnsContainer}>
           <TouchableOpacity style={styles.btnStyle1} onPress={addVendor}>
             <Text style={styles.optionsStyle}>{"Add Vendor"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btnStyle1} onPress={addSample}>
+            <Text style={styles.optionsStyle}>{"Add Sample"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.btnStyle2} onPress={calculateSales}>
             <Text style={styles.optionsStyle}>{"Calculate Sale"}</Text>
@@ -54,7 +64,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width,
-    height: height / 3,
+    height: height / 2.5,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent'

@@ -14,7 +14,7 @@ Navigation.events().registerAppLaunchedListener(() => {
         children: [
           {
             component: {
-              name: ScreenNames.CALCULATE_SALES,
+              name: ScreenNames.SPLASH,
             },
           },
         ],

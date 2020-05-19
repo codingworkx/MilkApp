@@ -21,13 +21,15 @@ export default function Home({ componentId }: any) {
   const dispatch = useDispatch();
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { uid } = useSelector((state: any) => state.userDataReducer);
+  const { uid, vendor_key } = useSelector((state: any) => state.userDataReducer);
 
   useEffect(() => {
     //event catched for logout user
     EventEmitter.on("logout", showLogoutAlert);
     //event catched for opening add vendor screen
     EventEmitter.on("add_vendor", addVendor);
+    //event catched for adding sample for a vendor
+    EventEmitter.on("add_sample", addSample);
     //event catched for opening calculate sales screen
     EventEmitter.on("calculate_sales", calculate);
 
@@ -76,6 +78,10 @@ export default function Home({ componentId }: any) {
 
   const addVendor = () => {
     PushTo(componentId, ScreenNames.ADD_VENDOR);
+  }
+
+  const addSample = () => {
+    PushTo(componentId, ScreenNames.ADD_SAMPLE, { vendor_key: vendor_key });
   }
 
   const calculate = () => {
