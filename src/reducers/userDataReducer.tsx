@@ -2,7 +2,8 @@ import { UPDATE_USER_DATA } from "../utils/constants";
 
 const initialState = {
   uid: "",
-  email: ""
+  email: "",
+  vendor_key: ""
 };
 
 const userDataReducer = (state = initialState, action: any) => {

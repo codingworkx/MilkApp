@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
@@ -12,14 +12,16 @@ import Loader from '../components/loader';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
 import VendorCard from '../components/vendorCard';
+import { UPDATE_USER_DATA } from '../utils/constants';
 import { SetRoot, ShowOverlay, PushTo } from '../utils/navMethods';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Home({ componentId }: any) {
-  const { uid } = useSelector((state: any) => state.userDataReducer);
+  const dispatch = useDispatch();
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { uid } = useSelector((state: any) => state.userDataReducer);
 
   useEffect(() => {
     //event catched for logout user
@@ -77,7 +79,7 @@ export default function Home({ componentId }: any) {
   }
 
   const calculate = () => {
-    PushTo(componentId, ScreenNames.ADD_VENDOR);
+    PushTo(componentId, ScreenNames.CALCULATE_SALES);
   }
 
   const renderUpper = () => {
@@ -104,7 +106,12 @@ export default function Home({ componentId }: any) {
             let { key, name, address, number } = item;
             return (
               <VendorCard vendor_key={key} name={name} address={address}
-                number={number} componentId={componentId} />
+                number={number} onOverlayOpen={(key: string) => {
+                  dispatch({
+                    type: UPDATE_USER_DATA,
+                    payload: { vendor_key: key }
+                  })
+                }} />
             );
           }}
         />

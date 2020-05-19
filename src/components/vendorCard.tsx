@@ -14,13 +14,13 @@ interface Props {
   number: string;
   address: string;
   vendor_key: string;
-  componentId: string;
+  onOverlayOpen: Function;
 }
 
-export default function VendorCard({ vendor_key, name, address, number, componentId }: Props) {
+export default function VendorCard({ vendor_key, name, address, number, onOverlayOpen }: Props) {
 
   const onVendorCardPress = () => {
-    // PushTo(componentId, ScreenNames.ADD_SAMPLE, { vendor_key })
+    onOverlayOpen(vendor_key);
     ShowOverlay(ScreenNames.VENDOR_ACTIONS);
   }
 
