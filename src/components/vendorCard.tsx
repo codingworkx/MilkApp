@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, Image, Text, TouchableOpacity } from 'rea
 
 //custom imports below
 import Colors from '../utils/colors';
-import { PushTo } from '../utils/navMethods';
+import { PushTo, ShowOverlay } from '../utils/navMethods';
 import LocalImages from '../utils/localImages';
 import ScreenNames from '../utils/screenNames';
 
@@ -18,6 +18,12 @@ interface Props {
 }
 
 export default function VendorCard({ vendor_key, name, address, number, componentId }: Props) {
+
+  const onVendorCardPress = () => {
+    // PushTo(componentId, ScreenNames.ADD_SAMPLE, { vendor_key })
+    ShowOverlay(ScreenNames.VENDOR_ACTIONS);
+  }
+
   const renderImage = () => {
     return (
       <View style={styles.imgContainer}>
@@ -52,7 +58,7 @@ export default function VendorCard({ vendor_key, name, address, number, componen
 
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.5}
-      onPress={() => PushTo(componentId, ScreenNames.ADD_SAMPLE, { vendor_key })}>
+      onPress={onVendorCardPress}>
       {renderImage()}
       {renderDetails()}
     </TouchableOpacity>

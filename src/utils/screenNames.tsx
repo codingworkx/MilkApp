@@ -6,6 +6,7 @@ const ScreenNames = {
   SETTINGS: "Settings",
   ADD_VENDOR: "AddVendor",
   ADD_SAMPLE: "AddSample",
+  VENDOR_ACTIONS: "VendorActions",
 }
 
 export default ScreenNames;

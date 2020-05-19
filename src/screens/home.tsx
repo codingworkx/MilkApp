@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
-import { FloatingAction } from "react-native-floating-action";
 import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Alert, FlatList } from 'react-native';
 
 //custom imports below
@@ -16,22 +15,6 @@ import VendorCard from '../components/vendorCard';
 import { SetRoot, ShowOverlay, PushTo } from '../utils/navMethods';
 
 const { width, height } = Dimensions.get('window');
-const actions = [
-  {
-    position: 1,
-    text: "Add Vendor",
-    name: "add_vendor",
-    color: Colors.THEME,
-    icon: LocalImages.ADD_USER,
-  },
-  {
-    position: 1,
-    text: "Calculate",
-    name: "calculate",
-    color: Colors.THEME,
-    icon: LocalImages.CALCULATE,
-  }
-];
 
 export default function Home({ componentId }: any) {
   const { uid } = useSelector((state: any) => state.userDataReducer);
@@ -41,6 +24,10 @@ export default function Home({ componentId }: any) {
   useEffect(() => {
     //event catched for logout user
     EventEmitter.on("logout", showLogoutAlert);
+    //event catched for opening add vendor screen
+    EventEmitter.on("add_vendor", addVendor);
+    //event catched for opening calculate sales screen
+    EventEmitter.on("calculate_sales", calculate);
 
     //code to get Vendors data from firebase
     const subscriber = firestore()
@@ -85,10 +72,12 @@ export default function Home({ componentId }: any) {
       .then(() => SetRoot(ScreenNames.LOGIN));
   }
 
-  const onActionBtnPress = (name?: string) => {
-    if (name === "add_vendor") {
-      PushTo(componentId, ScreenNames.ADD_VENDOR);
-    }
+  const addVendor = () => {
+    PushTo(componentId, ScreenNames.ADD_VENDOR);
+  }
+
+  const calculate = () => {
+    PushTo(componentId, ScreenNames.ADD_VENDOR);
   }
 
   const renderUpper = () => {
@@ -127,11 +116,6 @@ export default function Home({ componentId }: any) {
     <View style={styles.container}>
       {renderUpper()}
       {renderVendors()}
-      <FloatingAction
-        actions={actions}
-        color={Colors.THEME}
-        onPressItem={onActionBtnPress}
-      />
       {loading && <Loader />}
     </View>
   );
