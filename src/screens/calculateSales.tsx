@@ -8,6 +8,7 @@ import { View, StyleSheet, TouchableOpacity, Text, Keyboard } from 'react-native
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
+import Loader from '../components/loader';
 import { ShowMessage } from '../utils/commonMethods';
 import InputComponent from '../components/inputComponent';
 
@@ -21,6 +22,8 @@ export default function CalculateSales({ componentId }: any) {
     showFromPicker: false,
     to_date: moment(new Date()).add(1, 'days').toDate(),
   });
+  const [loading, setLoading] = useState(false);
+
   const { dairy_rate, commission, from_date, to_date,
     showFromPicker, showToPicker, data_to_process } = values;
   const { vendor_key } = useSelector((state: any) => state.userDataReducer);
@@ -79,6 +82,13 @@ export default function CalculateSales({ componentId }: any) {
       ShowMessage('Please Enter Vendor Commission', false);
       return;
     }
+    from_date.setHours(0);
+    from_date.setMinutes(0);
+    from_date.setSeconds(0);
+    to_date.setHours(23);
+    to_date.setMinutes(59);
+    to_date.setSeconds(59);
+    setLoading(true);
     let from_ts = firestore.Timestamp.fromDate(from_date),
       to_ts = firestore.Timestamp.fromDate(to_date);
     firestore().collection(`${vendor_key}-Samples`)
@@ -95,12 +105,42 @@ export default function CalculateSales({ componentId }: any) {
           ...values,
           ...{ data_to_process: data_to_save },
         });
+        setLoading(false);
       }).catch(error => {
+        console.log("error", error)
         ShowMessage("Something went wrong, Please try again!")
       });
   }
 
   console.log("data_to_process", data_to_process)
+  let sample_total = data_to_process.reduce(function (total, currentValue: any) {
+    return total + (+currentValue.final_value);
+  }, 0);
+  let quantity_total = data_to_process.reduce(function (total, currentValue: any) {
+    return total + (+currentValue.quantity);
+  }, 0);
+  console.log("sample_total", sample_total + sample_total / 2)
+  console.log("quantity_total", quantity_total)
+
+  const renderCalculations = () => {
+    if (data_to_process && data_to_process.length > 0) {
+      let final_sample = sample_total + sample_total / 2,
+        sample_by_qty = final_sample / quantity_total,
+        qty_sub_sample = quantity_total + sample_by_qty,
+        final_rate = qty_sub_sample * (+dairy_rate + +commission);
+      return (
+        <React.Fragment>
+          <Text style={styles.textStyle}>{`Total Sample Value =    ${sample_total}`}</Text>
+          <Text style={styles.textStyle}>{`Total Quantity Of Milk  =    ${quantity_total} Ltrs.`}</Text>
+          <Text style={styles.textStyle}>{`Sample  (+)  (Sample/2) =    ${final_sample}`}</Text>
+          <Text style={styles.textStyle}>{`Final Sample (/) Quantity  =    ${sample_by_qty}`}</Text>
+          <Text style={styles.textStyle}>{`Quantity (-) Final Calculated Sample  =    ${qty_sub_sample}`}</Text>
+          <Text style={styles.textStyle}>{`Final Value (x) Dairy Rate (+) Vendor Commission  =    ${final_rate} Rs`}</Text>
+        </React.Fragment>
+      );
+    }
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -139,10 +179,11 @@ export default function CalculateSales({ componentId }: any) {
           maxLength={3}
           value={commission}
           label={"Vendor Commission"}
-          extraStyle={{ marginTop: 30 }}
+          extraStyle={{ marginTop: 30, marginBottom: 30 }}
           placeholder={"Enter Vendor Commission Per Litres"}
           onInputChange={(val: string) => updateFields('commission', val)}
         />
+        {renderCalculations()}
       </View>
       <View style={styles.lowerContainer}>
         <TouchableOpacity style={styles.addBtn} onPress={getData}>
@@ -166,6 +207,7 @@ export default function CalculateSales({ componentId }: any) {
           onChange={(event: any, date: any) => updateToDate(date)}
         />
       )}
+      {loading && <Loader />}
     </View>
   );
 }
@@ -192,8 +234,7 @@ const styles = StyleSheet.create({
   },
   upperContainer: {
     flex: 0.8,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: 'center'
   },
   lowerContainer: {
     flex: 0.2,
@@ -223,5 +264,13 @@ const styles = StyleSheet.create({
     marginTop: 30,
     color: Colors.WHITE,
     fontFamily: Fonts.BOLD
+  },
+  textStyle: {
+    marginTop: 5,
+    fontSize: 14,
+    maxWidth: '80%',
+    color: Colors.WHITE,
+    textDecorationLine: 'underline',
+    fontFamily: Fonts.SEMI_BOLD,
   }
 })
