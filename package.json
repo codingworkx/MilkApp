@@ -9,7 +9,8 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pods": "cd ios && rm -f Podfile.lock && pod install",
-    "emu": "emulator -avd Pixel_2"
+    "emu": "emulator -avd Pixel_2",
+    "build": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.3.0",
