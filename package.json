@@ -10,7 +10,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pods": "cd ios && rm -f Podfile.lock && pod install",
     "emu": "emulator -avd Pixel_2",
-    "build": "cd android && ./gradlew assembleRelease"
+    "build": "cd android && ./gradlew assembleRelease",
+    "tcp": "adb reverse tcp:8081 tcp:8081"
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.3.0",

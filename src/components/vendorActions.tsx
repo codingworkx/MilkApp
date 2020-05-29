@@ -5,18 +5,11 @@ import EventEmitter from "react-native-eventemitter";
 import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
 
 //custom imports below
-import Colors from '../utils/colors';
 import Fonts from '../utils/fonts';
+import Colors from '../utils/colors';
 const { width, height } = Dimensions.get("window");
 
 export default function VendorActions({ componentId }: any) {
-
-  const addVendor = () => {
-    setTimeout(() => {
-      EventEmitter.emit('add_vendor');
-    }, 100);
-    Navigation.dismissOverlay(componentId);
-  }
 
   const calculateSales = () => {
     setTimeout(() => {
@@ -36,9 +29,6 @@ export default function VendorActions({ componentId }: any) {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <View style={styles.btnsContainer}>
-          <TouchableOpacity style={styles.btnStyle1} onPress={addVendor}>
-            <Text style={styles.optionsStyle}>{"Add Vendor"}</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.btnStyle1} onPress={addSample}>
             <Text style={styles.optionsStyle}>{"Add Sample"}</Text>
           </TouchableOpacity>
@@ -64,7 +54,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width,
-    height: height / 2.5,
+    height: height / 3.5,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent'

@@ -20,6 +20,13 @@ export default function Settings({ componentId }: Props) {
     Navigation.dismissOverlay(componentId);
   }
 
+  const addVendor = () => {
+    setTimeout(() => {
+      EventEmitter.emit('add_vendor');
+    }, 100);
+    Navigation.dismissOverlay(componentId);
+  }
+
   const logout = () => {
     setTimeout(() => {
       EventEmitter.emit('logout');
@@ -40,8 +47,8 @@ export default function Settings({ componentId }: Props) {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         {renderHeader()}
-        <TouchableOpacity style={styles.logoutBtn}>
-          <Text style={styles.text}>{"FAQ"}</Text>
+        <TouchableOpacity style={styles.logoutBtn} onPress={addVendor}>
+          <Text style={styles.text}>{"Add Vendor"}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.faqBtn} onPress={logout}>
           <Text style={styles.text}>{"Logout"}</Text>
