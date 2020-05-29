@@ -47,16 +47,22 @@ export default function Settings({ componentId }: Props) {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         {renderHeader()}
-        <TouchableOpacity style={styles.logoutBtn} onPress={addVendor}>
-          <Text style={styles.text}>{"Add Vendor"}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.faqBtn} onPress={logout}>
-          <Text style={styles.text}>{"Logout"}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.aboutBtn}>
-          <Text style={styles.text}>{"About"}</Text>
-          <Text style={styles.text}>{"CodingWorkX"}</Text>
-        </TouchableOpacity>
+        <View style={styles.lowerContainer}>
+          <View style={styles.btnsContainer}>
+            <TouchableOpacity style={styles.logoutBtn} onPress={addVendor}>
+              <Text style={styles.text}>{"Add Vendor"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.faqBtn} onPress={logout}>
+              <Text style={styles.text}>{"Logout"}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.btnsContainer}>
+            <TouchableOpacity style={styles.aboutBtn}>
+              <Text style={styles.text}>{"About"}</Text>
+              <Text style={styles.text}>{"CodingWorkX"}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -82,6 +88,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomColor: Colors.THEME
   },
+  lowerContainer: {
+    flex: 1
+  },
+  btnsContainer: {
+    height: 80,
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
   settingsText: {
     fontSize: 14,
     color: Colors.BLACK,
@@ -93,34 +110,25 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.SEMI_BOLD
   },
   logoutBtn: {
-    top: 80,
-    left: 50,
     height: 50,
     width: 150,
     borderRadius: 25,
-    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.THEME
   },
   faqBtn: {
-    top: 80,
-    right: 50,
     height: 50,
     width: 150,
     borderRadius: 25,
-    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.THEME
   },
   aboutBtn: {
-    top: 150,
-    left: 105,
     height: 60,
     width: 200,
     borderRadius: 30,
-    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.THEME

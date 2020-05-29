@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     width,
     bottom: 0,
     left: width / 2,
-    height: height / 2.5,
+    height: height / 2.8,
     position: 'absolute',
   },
   settingBtn: {
