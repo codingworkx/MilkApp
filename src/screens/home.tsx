@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
-import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Alert, FlatList } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Alert, FlatList, Text } from 'react-native';
 
 //custom imports below
 import Colors from '../utils/colors';
@@ -33,26 +33,31 @@ export default function Home({ componentId }: any) {
     //event catched for opening calculate sales screen
     EventEmitter.on("calculate_sales", calculate);
 
-    //code to get Vendors data from firebase
-    const subscriber = firestore()
-      .collection(`${uid}-Vendors`)
-      .onSnapshot(querySnapshot => {
-        const local_vendors: any = [];
-
-        querySnapshot.forEach(documentSnapshot => {
-          local_vendors.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          });
-        });
-
-        setVendors(local_vendors);
-        setLoading(false);
-      });
-
-    // Unsubscribe from events when no longer in use
-    return () => subscriber();
+    getVendors();
   }, []);
+
+  /**
+   * function to get vendors list from firebase
+   */
+  const getVendors = async () => {
+    setLoading(true);
+    const vendors_data: any = await firestore().collection(`${uid}-Vendors`).get();
+    let local_vendors: any = [];
+    if (vendors_data._docs) {
+      let { _docs } = vendors_data;
+      _docs.forEach((e: any) => {
+        let { _data, id } = e;
+        local_vendors.push({
+          ..._data,
+          key: id,
+        });
+      });
+      setVendors(local_vendors);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }
 
   const showLogoutAlert = () => {
     Alert.alert(
@@ -102,6 +107,14 @@ export default function Home({ componentId }: any) {
     );
   }
 
+  const renderEmptyData = () => {
+    return (
+      <View style={styles.noData}>
+        <Text style={styles.noDataTxt}>{"No Vendors!"}</Text>
+      </View>
+    );
+  }
+
   const renderVendors = () => {
     return (
       <View style={styles.lowerContainer}>
@@ -120,6 +133,9 @@ export default function Home({ componentId }: any) {
                 }} />
             );
           }}
+          ListEmptyComponent={renderEmptyData}
+          refreshing={loading}
+          onRefresh={getVendors}
         />
       </View>
     );
@@ -186,6 +202,16 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     tintColor: Colors.WHITE
+  },
+  noData: {
+    height: 100,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  noDataTxt: {
+    fontSize: 20,
+    fontWeight: 'bold'
   }
 });
 
