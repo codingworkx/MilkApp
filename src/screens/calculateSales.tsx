@@ -11,12 +11,13 @@ import Colors from '../utils/colors';
 import Loader from '../components/loader';
 import { ShowMessage } from '../utils/commonMethods';
 import InputComponent from '../components/inputComponent';
+import { PushTo } from '../utils/navMethods';
+import ScreenNames from '../utils/screenNames';
 
 export default function CalculateSales({ componentId }: any) {
   const [values, setValues] = useState({
     dairy_rate: '',
     commission: '',
-    data_to_process: [],
     showToPicker: false,
     from_date: new Date(),
     showFromPicker: false,
@@ -25,7 +26,7 @@ export default function CalculateSales({ componentId }: any) {
   const [loading, setLoading] = useState(false);
 
   const { dairy_rate, commission, from_date, to_date,
-    showFromPicker, showToPicker, data_to_process } = values;
+    showFromPicker, showToPicker } = values;
   const { vendor_key } = useSelector((state: any) => state.userDataReducer);
 
   const updateFields = (key: string, value: any) => {
@@ -82,6 +83,7 @@ export default function CalculateSales({ componentId }: any) {
       ShowMessage('Please Enter Vendor Commission', false);
       return;
     }
+
     from_date.setHours(0);
     from_date.setMinutes(0);
     from_date.setSeconds(0);
@@ -101,48 +103,16 @@ export default function CalculateSales({ componentId }: any) {
           console.log("element", element)
           data_to_save.push(element._data);
         });
-        setValues({
-          ...values,
-          ...{ data_to_process: data_to_save },
-        });
         setLoading(false);
+        PushTo(componentId, ScreenNames.SHOW_SALES, {
+          data: data_to_save,
+          commission: commission,
+          dairy_rate: dairy_rate
+        });
       }).catch(error => {
         console.log("error", error)
         ShowMessage("Something went wrong, Please try again!")
       });
-  }
-
-  console.log("data_to_process", data_to_process)
-  let sample_total = data_to_process.reduce(function (total, currentValue: any) {
-    return total + (+currentValue.final_value);
-  }, 0);
-  let quantity_total = data_to_process.reduce(function (total, currentValue: any) {
-    return total + (+currentValue.quantity);
-  }, 0);
-  console.log("sample_total", sample_total + sample_total / 2)
-  console.log("quantity_total", quantity_total)
-
-  const renderCalculations = () => {
-    if (data_to_process && data_to_process.length > 0) {
-      let final_sample = sample_total + sample_total / 2,
-        sample_by_qty = final_sample / quantity_total,
-        qty_sub_sample = quantity_total + sample_by_qty,
-        final_rate = qty_sub_sample * (+dairy_rate + +commission);
-      if (final_rate < 0) {
-        final_rate = -final_rate;
-      }
-      return (
-        <React.Fragment>
-          <Text style={styles.textStyle}>{`Total Sample Value =    ${sample_total}`}</Text>
-          <Text style={styles.textStyle}>{`Total Quantity Of Milk  =    ${quantity_total} Ltrs.`}</Text>
-          <Text style={styles.textStyle}>{`Sample  (+)  (Sample/2) =    ${final_sample}`}</Text>
-          <Text style={styles.textStyle}>{`Final Sample (/) Quantity  =    ${sample_by_qty}`}</Text>
-          <Text style={styles.textStyle}>{`Quantity (-) Final Calculated Sample  =    ${qty_sub_sample}`}</Text>
-          <Text style={styles.textStyle}>{`Final Value (x) Dairy Rate (+) Vendor Commission  =    ${final_rate} Rs`}</Text>
-        </React.Fragment>
-      );
-    }
-    return null;
   }
 
   return (
@@ -186,7 +156,6 @@ export default function CalculateSales({ componentId }: any) {
           placeholder={"Enter Vendor Commission Per Litres"}
           onInputChange={(val: string) => updateFields('commission', val)}
         />
-        {renderCalculations()}
       </View>
       <View style={styles.lowerContainer}>
         <TouchableOpacity style={styles.addBtn} onPress={getData}>

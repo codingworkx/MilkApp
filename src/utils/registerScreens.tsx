@@ -9,6 +9,7 @@ import ScreenNames from "./screenNames";
 import Settings from "../screens/settings";
 import AddVendor from "../screens/addVendor";
 import AddSample from "../screens/addSample";
+import ShowSales from "../screens/showSales";
 import CalculateSales from "../screens/calculateSales";
 import VendorActions from "../components/vendorActions";
 
@@ -20,6 +21,7 @@ const RegisterScreens = (Provider: any, store: any) => {
   Navigation.registerComponentWithRedux(ScreenNames.SETTINGS, () => Settings, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.ADD_SAMPLE, () => AddSample, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.ADD_VENDOR, () => AddVendor, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.SHOW_SALES, () => ShowSales, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.VENDOR_ACTIONS, () => VendorActions, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.CALCULATE_SALES, () => CalculateSales, Provider, store);
 }
