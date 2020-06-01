@@ -62,23 +62,27 @@ export default function AddSample({ componentId, vendor_key }: any) {
       return;
     }
 
-    firestore()
-      .collection(`${vendor_key}-Samples`)
-      .add({
-        sample,
-        quantity,
-        final_value,
-        time: firestore.Timestamp.now()
-      })
-      .then(() => {
-        ShowMessage("Sample Added Successfully", false)
-        setTimeout(() => {
-          Navigation.pop(componentId);
-        }, 1000);
-      })
-      .catch(() => {
-        ShowMessage("Some Problem Please Check After Some Time!", false)
-      });
+    if (vendor_key && vendor_key.length > 0) {
+      firestore()
+        .collection(`${vendor_key}-Samples`)
+        .add({
+          sample,
+          quantity,
+          final_value,
+          time: firestore.Timestamp.now()
+        })
+        .then(() => {
+          ShowMessage("Sample Added Successfully", false)
+          setTimeout(() => {
+            Navigation.pop(componentId);
+          }, 1000);
+        })
+        .catch(() => {
+          ShowMessage("Some Problem Please Check After Some Time!", false)
+        });
+    } else {
+      ShowMessage("Please try again later!", false);
+    }
   }
 
   return (

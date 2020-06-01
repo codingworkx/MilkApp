@@ -29,22 +29,26 @@ export default function AddVendor({ componentId }: any) {
   }
 
   const addVendor = () => {
-    firestore()
-      .collection(`${uid}-Vendors`)
-      .add({
-        name,
-        number,
-        address
-      })
-      .then(() => {
-        ShowMessage("Vendor Added Successfully", false)
-        setTimeout(() => {
-          Navigation.pop(componentId);
-        }, 1000);
-      })
-      .catch(() => {
-        ShowMessage("Some Problem Please Check After Some Time!", false)
-      });
+    if (uid && uid.length > 0) {
+      firestore()
+        .collection(`${uid}-Vendors`)
+        .add({
+          name,
+          number,
+          address
+        })
+        .then(() => {
+          ShowMessage("Vendor Added Successfully", false)
+          setTimeout(() => {
+            Navigation.pop(componentId);
+          }, 1000);
+        })
+        .catch(() => {
+          ShowMessage("Some Problem Please Check After Some Time!", false)
+        });
+    } else {
+      ShowMessage("Please try again later!", false);
+    }
   }
 
   const submitAddVendor = () => {

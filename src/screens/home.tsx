@@ -1,10 +1,9 @@
-import { useSelector, useDispatch } from 'react-redux';
-import auth from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
-import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Alert, FlatList, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, Text } from 'react-native';
 
 //custom imports below
 import Colors from '../utils/colors';
@@ -12,9 +11,9 @@ import Loader from '../components/loader';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
 import VendorCard from '../components/vendorCard';
-import { UPDATE_USER_DATA, DELETE_USER_DATA } from '../utils/constants';
-import { SetRoot, ShowOverlay, PushTo } from '../utils/navMethods';
 import { ShowMessage } from '../utils/commonMethods';
+import { UPDATE_USER_DATA } from '../utils/constants';
+import { ShowOverlay, PushTo } from '../utils/navMethods';
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,8 +24,6 @@ export default function Home({ componentId }: any) {
   const { uid, vendor_key } = useSelector((state: any) => state.userDataReducer);
 
   useEffect(() => {
-    //event catched for logout user
-    EventEmitter.on("logout", showLogoutAlert);
     //event catched for opening add vendor screen
     EventEmitter.on("add_vendor", addVendor);
     //event catched for adding sample for a vendor
@@ -62,32 +59,6 @@ export default function Home({ componentId }: any) {
     } else {
       ShowMessage('Something went wrong please try again!');
     }
-  }
-
-  const showLogoutAlert = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-          onPress: () => console.log("Cancel Pressed"),
-        },
-        { text: "YES", onPress: () => logout() }
-      ],
-      { cancelable: false }
-    );
-  }
-
-  const logout = () => {
-    dispatch({
-      payload: {},
-      type: DELETE_USER_DATA,
-    })
-    auth()
-      .signOut()
-      .then(() => SetRoot(ScreenNames.LOGIN));
   }
 
   const addVendor = () => {

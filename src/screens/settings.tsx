@@ -1,12 +1,17 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import auth from '@react-native-firebase/auth';
 import { Navigation } from 'react-native-navigation';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Alert } from 'react-native';
 
 //csutom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
+import { SetRoot } from '../utils/navMethods';
+import ScreenNames from '../utils/screenNames';
+import { DELETE_USER_DATA } from '../utils/constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,6 +20,7 @@ interface Props {
 }
 
 export default function Settings({ componentId }: Props) {
+  const dispatch = useDispatch();
 
   const closeModal = () => {
     Navigation.dismissOverlay(componentId);
@@ -28,10 +34,32 @@ export default function Settings({ componentId }: Props) {
   }
 
   const logout = () => {
-    setTimeout(() => {
-      EventEmitter.emit('logout');
-    }, 100);
-    Navigation.dismissOverlay(componentId);
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        { text: "YES", onPress: () => logout_user() }
+      ],
+      { cancelable: false }
+    );
+  }
+
+  const logout_user = () => {
+    dispatch({
+      payload: {},
+      type: DELETE_USER_DATA,
+    })
+    auth()
+      .signOut()
+      .then(() => {
+        Navigation.dismissOverlay(componentId);
+        SetRoot(ScreenNames.LOGIN);
+      });
   }
 
   const renderHeader = () => {

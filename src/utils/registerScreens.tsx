@@ -13,14 +13,14 @@ import CalculateSales from "../screens/calculateSales";
 import VendorActions from "../components/vendorActions";
 
 const RegisterScreens = (Provider: any, store: any) => {
-  Navigation.registerComponent(ScreenNames.SIGNUP, () => Signup);
-  Navigation.registerComponent(ScreenNames.SETTINGS, () => Settings);
-  Navigation.registerComponent(ScreenNames.VENDOR_ACTIONS, () => VendorActions);
   Navigation.registerComponentWithRedux(ScreenNames.HOME, () => Home, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.LOGIN, () => Login, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.SIGNUP, () => Signup, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.SPLASH, () => Splash, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.SETTINGS, () => Settings, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.ADD_SAMPLE, () => AddSample, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.ADD_VENDOR, () => AddVendor, Provider, store);
+  Navigation.registerComponentWithRedux(ScreenNames.VENDOR_ACTIONS, () => VendorActions, Provider, store);
   Navigation.registerComponentWithRedux(ScreenNames.CALCULATE_SALES, () => CalculateSales, Provider, store);
 }
 
