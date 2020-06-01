@@ -12,15 +12,16 @@ import Loader from '../components/loader';
 import ScreenNames from '../utils/screenNames';
 import LocalImages from '../utils/localImages';
 import VendorCard from '../components/vendorCard';
-import { UPDATE_USER_DATA } from '../utils/constants';
+import { UPDATE_USER_DATA, DELETE_USER_DATA } from '../utils/constants';
 import { SetRoot, ShowOverlay, PushTo } from '../utils/navMethods';
+import { ShowMessage } from '../utils/commonMethods';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Home({ componentId }: any) {
   const dispatch = useDispatch();
   const [vendors, setVendors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { uid, vendor_key } = useSelector((state: any) => state.userDataReducer);
 
   useEffect(() => {
@@ -40,22 +41,26 @@ export default function Home({ componentId }: any) {
    * function to get vendors list from firebase
    */
   const getVendors = async () => {
-    setLoading(true);
-    const vendors_data: any = await firestore().collection(`${uid}-Vendors`).get();
-    let local_vendors: any = [];
-    if (vendors_data._docs) {
-      let { _docs } = vendors_data;
-      _docs.forEach((e: any) => {
-        let { _data, id } = e;
-        local_vendors.push({
-          ..._data,
-          key: id,
+    if (uid && uid.length > 0) {
+      setLoading(true);
+      const vendors_data: any = await firestore().collection(`${uid}-Vendors`).get();
+      let local_vendors: any = [];
+      if (vendors_data._docs) {
+        let { _docs } = vendors_data;
+        _docs.forEach((e: any) => {
+          let { _data, id } = e;
+          local_vendors.push({
+            ..._data,
+            key: id,
+          });
         });
-      });
-      setVendors(local_vendors);
-      setLoading(false);
+        setVendors(local_vendors);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     } else {
-      setLoading(false);
+      ShowMessage('Something went wrong please try again!');
     }
   }
 
@@ -76,6 +81,10 @@ export default function Home({ componentId }: any) {
   }
 
   const logout = () => {
+    dispatch({
+      payload: {},
+      type: DELETE_USER_DATA,
+    })
     auth()
       .signOut()
       .then(() => SetRoot(ScreenNames.LOGIN));

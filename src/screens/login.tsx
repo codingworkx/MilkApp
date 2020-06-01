@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 //@ts-ignore
 import CheckBox from '@react-native-community/checkbox';
@@ -9,6 +10,7 @@ import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
 import ScreenNames from '../utils/screenNames';
 import { PushTo, SetRoot } from '../utils/navMethods';
+import { UPDATE_USER_DATA } from '../utils/constants';
 import { ValidateEmail, ShowMessage, ValidatePassword } from '../utils/commonMethods';
 
 interface Props {
@@ -22,6 +24,7 @@ class State {
 }
 
 export default function Login({ componentId }: Props) {
+  const dispatch = useDispatch();
   const [values, setValues] = useState(new State());
 
   const { email, password, showPass } = values;
@@ -59,6 +62,18 @@ export default function Login({ componentId }: Props) {
             const { _user } = user;
             console.log("_user from Login", _user);
             if (_user && _user.providerData) {
+              const { uid } = _user,
+                { email } = _user.providerData[0];
+              dispatch({
+                type: UPDATE_USER_DATA,
+                payload: {
+                  uid,
+                  email
+                }
+              });
+              setTimeout(() => {
+                SetRoot(ScreenNames.HOME);
+              }, 2500);
               SetRoot(ScreenNames.HOME);
             }
           }
