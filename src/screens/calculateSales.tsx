@@ -128,6 +128,9 @@ export default function CalculateSales({ componentId }: any) {
         sample_by_qty = final_sample / quantity_total,
         qty_sub_sample = quantity_total + sample_by_qty,
         final_rate = qty_sub_sample * (+dairy_rate + +commission);
+      if (final_rate < 0) {
+        final_rate = -final_rate;
+      }
       return (
         <React.Fragment>
           <Text style={styles.textStyle}>{`Total Sample Value =    ${sample_total}`}</Text>

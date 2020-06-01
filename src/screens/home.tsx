@@ -21,7 +21,7 @@ export default function Home({ componentId }: any) {
   const dispatch = useDispatch();
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { uid, vendor_key } = useSelector((state: any) => state.userDataReducer);
+  const { uid } = useSelector((state: any) => state.userDataReducer);
 
   useEffect(() => {
     //event catched for opening add vendor screen
@@ -66,7 +66,7 @@ export default function Home({ componentId }: any) {
   }
 
   const addSample = () => {
-    PushTo(componentId, ScreenNames.ADD_SAMPLE, { vendor_key: vendor_key });
+    PushTo(componentId, ScreenNames.ADD_SAMPLE);
   }
 
   const calculate = () => {

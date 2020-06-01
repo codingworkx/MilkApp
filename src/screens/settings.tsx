@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { Navigation } from 'react-native-navigation';
 //@ts-ignore
 import EventEmitter from "react-native-eventemitter";
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Alert, Linking } from 'react-native';
 
 //csutom imports below
 import Fonts from '../utils/fonts';
@@ -71,6 +71,10 @@ export default function Settings({ componentId }: Props) {
     );
   }
 
+  const codingWorkx = () => {
+    Linking.openURL("https://codingworkx.com/");
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -85,7 +89,7 @@ export default function Settings({ componentId }: Props) {
             </TouchableOpacity>
           </View>
           <View style={styles.btnsContainer}>
-            <TouchableOpacity style={styles.aboutBtn}>
+            <TouchableOpacity style={styles.aboutBtn} onPress={codingWorkx}>
               <Text style={styles.text}>{"About"}</Text>
               <Text style={styles.text}>{"CodingWorkX"}</Text>
             </TouchableOpacity>

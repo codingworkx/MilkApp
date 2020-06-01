@@ -1,5 +1,7 @@
+import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, Keyboard } from 'react-native';
 
 //custom imports below
@@ -7,14 +9,19 @@ import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
 import { ShowMessage } from '../utils/commonMethods';
 import { Navigation } from 'react-native-navigation';
+import InputComponent from '../components/inputComponent';
+import { useSelector } from 'react-redux';
 
-export default function AddSample({ componentId, vendor_key }: any) {
+export default function AddSample({ componentId }: any) {
+  const { vendor_key } = useSelector((state: any) => state.userDataReducer);
   const [values, setValues] = useState({
     sample: '',
     quantity: '',
-    final_value: '0'
+    final_value: '0',
+    date: new Date(),
+    showPicker: false,
   });
-  const { sample, quantity, final_value } = values;
+  const { sample, quantity, final_value, showPicker, date } = values;
 
   useEffect(() => {
     if (sample.trim().length > 0 && quantity.trim().length > 0) {
@@ -61,7 +68,7 @@ export default function AddSample({ componentId, vendor_key }: any) {
       ShowMessage('Please Check Your Values!', false);
       return;
     }
-
+    console.log("vendor_key", vendor_key)
     if (vendor_key && vendor_key.length > 0) {
       firestore()
         .collection(`${vendor_key}-Samples`)
@@ -69,7 +76,7 @@ export default function AddSample({ componentId, vendor_key }: any) {
           sample,
           quantity,
           final_value,
-          time: firestore.Timestamp.now()
+          time: firestore.Timestamp.fromDate(date)
         })
         .then(() => {
           ShowMessage("Sample Added Successfully", false)
@@ -85,9 +92,38 @@ export default function AddSample({ componentId, vendor_key }: any) {
     }
   }
 
+  const updateDate = (date: any) => {
+    if (date) {
+      setValues({
+        ...values,
+        ...{ 'showPicker': false, date: date },
+      });
+    } else {
+      setValues({
+        ...values,
+        ...{ 'showPicker': false },
+      });
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.upperContainer}>
+        <TouchableOpacity onPress={() => {
+          setValues({
+            ...values,
+            ...{ 'showPicker': true },
+          });
+        }}>
+          <InputComponent
+            label={"Sample Date"}
+            isPointerNone={true}
+            placeholder={"Sample Date"}
+            extraStyle={{ width: 170 }}
+            value={moment(date).format("DD-MM-YYYY HH:mm A")}
+            onInputChange={(val: string) => updateFields('date', val)}
+          />
+        </TouchableOpacity>
         <TextInput
           maxLength={4}
           value={quantity}
@@ -111,6 +147,14 @@ export default function AddSample({ componentId, vendor_key }: any) {
           <Text style={styles.addTxt}>{"Add Sample"}</Text>
         </TouchableOpacity>
       </View>
+      {showPicker && (
+        <DateTimePicker
+          mode="date"
+          value={date}
+          display="default"
+          onChange={(event: any, date: any) => updateDate(date)}
+        />
+      )}
     </View>
   );
 }
