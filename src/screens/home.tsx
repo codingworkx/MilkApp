@@ -21,11 +21,13 @@ export default function Home({ componentId }: any) {
   const dispatch = useDispatch();
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { uid } = useSelector((state: any) => state.userDataReducer);
+  const { uid, address, name, number, vendor_key } = useSelector((state: any) => state.userDataReducer);
 
   useEffect(() => {
     //event catched for opening add vendor screen
     EventEmitter.on("add_vendor", addVendor);
+    //event catched for opening edit vendor screen
+    EventEmitter.on("edit_vendor", editVendor);
     //event catched for adding sample for a vendor
     EventEmitter.on("add_sample", addSample);
     //event catched for opening calculate sales screen
@@ -63,6 +65,11 @@ export default function Home({ componentId }: any) {
 
   const addVendor = () => {
     PushTo(componentId, ScreenNames.ADD_VENDOR);
+  }
+
+  const editVendor = () => {
+    PushTo(componentId, ScreenNames.EDIT_VENDOR,
+      { address_p: address, name_p: name, number_p: number, vendor_key });
   }
 
   const addSample = () => {
@@ -105,10 +112,10 @@ export default function Home({ componentId }: any) {
             let { key, name, address, number } = item;
             return (
               <VendorCard vendor_key={key} name={name} address={address}
-                number={number} onOverlayOpen={(key: string) => {
+                number={number} onOverlayOpen={({ vendor_key, name, address, number }: any) => {
                   dispatch({
                     type: UPDATE_USER_DATA,
-                    payload: { vendor_key: key }
+                    payload: { vendor_key, name, address, number }
                   })
                 }} />
             );

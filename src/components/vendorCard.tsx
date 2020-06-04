@@ -20,7 +20,12 @@ interface Props {
 export default function VendorCard({ vendor_key, name, address, number, onOverlayOpen }: Props) {
 
   const onVendorCardPress = () => {
-    onOverlayOpen(vendor_key);
+    onOverlayOpen({
+      name,
+      number,
+      address,
+      vendor_key,
+    });
     ShowOverlay(ScreenNames.VENDOR_ACTIONS);
   }
 

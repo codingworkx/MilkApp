@@ -7,6 +7,7 @@ const ScreenNames = {
   ADD_VENDOR: "AddVendor",
   ADD_SAMPLE: "AddSample",
   SHOW_SALES: "ShowSales",
+  EDIT_VENDOR: "EditVendor",
   VENDOR_ACTIONS: "VendorActions",
   CALCULATE_SALES: "CalculateSales",
 }
