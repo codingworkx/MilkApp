@@ -101,7 +101,10 @@ export default function CalculateSales({ componentId }: any) {
         let data_to_save: any = [];
         snapshot.forEach((element: any) => {
           console.log("element", element)
-          data_to_save.push(element._data);
+          data_to_save.push({
+            ...element._data,
+            ...{ id: element.id }
+          });
         });
         setLoading(false);
         PushTo(componentId, ScreenNames.SHOW_SALES, {

@@ -1,13 +1,17 @@
 import React from 'react';
 import moment from 'moment';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 //custom imprts below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
+import LocalImages from '../utils/localImages';
 
-export default function ShowSales({ componentId, data, dairy_rate, commission }: any) {
+const { width } = Dimensions.get('window');
+
+export default function ShowSales({ data, dairy_rate, commission }: any) {
   console.log("data", data)
 
   if (!data || data.length === 0) {
@@ -37,19 +41,13 @@ export default function ShowSales({ componentId, data, dairy_rate, commission }:
     );
   }
 
-  const renderData = (rowData: any) => {
-    const { item, index } = rowData, { time, quantity, final_value, sample } = item;
+  const renderRowItem = (rowData: any) => {
+    const { item } = rowData, { time, quantity, final_value, sample } = item;
     const calculated_time = firestore.Timestamp.fromMillis(time._seconds * 1000).toDate();
-    let extraStyle = {};
-    if (index === data.length - 1) {
-      extraStyle = {
-        borderBottomWidth: 0
-      };
-    }
     return (
-      <View style={[styles.dataContainer, extraStyle]}>
+      <View style={styles.rowContainer}>
         <View style={styles.firstCol}>
-          <Text style={styles.valueTxt}>
+          <Text style={styles.headerTxt}>
             {moment(calculated_time).format("DD-MM-YYYY HH:mm A")}
           </Text>
         </View>
@@ -66,6 +64,20 @@ export default function ShowSales({ componentId, data, dairy_rate, commission }:
     );
   }
 
+  const renderDeleteBtn = (rowData: any, rowMap: any) => {
+    const { item } = rowData;
+    return (
+      <TouchableOpacity style={styles.deleteBtn} onPress={() => rowMap[item.id].closeRow()}>
+        <Image
+          resizeMode="contain"
+          resizeMethod="resize"
+          style={styles.deleteIcon}
+          source={LocalImages.DELETE_ICON}
+        />
+      </TouchableOpacity>
+    );
+  }
+
   const renderCalculations = () => {
     let sample_total = data.reduce(function (total: any, currentValue: any) {
       return total + (+currentValue.final_value);
@@ -74,8 +86,6 @@ export default function ShowSales({ componentId, data, dairy_rate, commission }:
       return total + (+currentValue.quantity);
     }, 0);
 
-    console.log("sample_total", sample_total + sample_total / 2)
-    console.log("quantity_total", quantity_total)
     if (data && data.length > 0) {
       let final_sample = sample_total + sample_total / 2,
         sample_by_qty = final_sample / quantity_total,
@@ -85,14 +95,14 @@ export default function ShowSales({ componentId, data, dairy_rate, commission }:
         final_rate = -final_rate;
       }
       return (
-        <React.Fragment>
-          <Text style={[styles.textStyle, { marginTop: 10 }]}>{`Total Sample Value =    ${sample_total}`}</Text>
+        <View style={styles.calcContainer}>
+          <Text style={styles.textStyle}>{`Total Sample Value =    ${sample_total}`}</Text>
           <Text style={styles.textStyle}>{`Total Quantity Of Milk  =    ${quantity_total} Ltrs.`}</Text>
           <Text style={styles.textStyle}>{`Sample  (+)  (Sample/2) =    ${final_sample}`}</Text>
           <Text style={styles.textStyle}>{`Final Sample (/) Quantity  =    ${sample_by_qty}`}</Text>
           <Text style={styles.textStyle}>{`Quantity (-) Final Calculated Sample  =    ${qty_sub_sample}`}</Text>
-          <Text style={styles.textStyle}>{`Final Value (x) Dairy Rate (+) Vendor Commission  =    ${final_rate} Rs`}</Text>
-        </React.Fragment>
+          <Text style={[styles.textStyle, { marginBottom: 10 }]}>{`Final Value (x) Dairy Rate (+) Vendor Commission  =    ${final_rate} Rs`}</Text>
+        </View>
       );
     }
     return null;
@@ -100,18 +110,19 @@ export default function ShowSales({ componentId, data, dairy_rate, commission }:
 
   return (
     <View style={styles.container}>
-      <View style={styles.upperContainer}>
-        <FlatList
-          data={data}
-          renderItem={renderData}
-          style={styles.listStyle}
-          ListHeaderComponent={renderHeader}
-          keyExtractor={(item: any, index) => index.toString()}
-        />
-      </View>
-      <View style={styles.lowerContainer}>
-        {renderCalculations()}
-      </View>
+      {renderHeader()}
+      <SwipeListView
+        data={data}
+        useFlatList={true}
+        rightOpenValue={-100}
+        disableRightSwipe={true}
+        style={{ marginTop: 60 }}
+        renderItem={renderRowItem}
+        renderHiddenItem={renderDeleteBtn}
+        keyExtractor={(item: any) => item.id}
+        contentContainerStyle={{ paddingBottom: 250 }}
+      />
+      {renderCalculations()}
     </View>
   );
 }
@@ -134,12 +145,9 @@ ShowSales.options = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 5,
     alignItems: 'center',
     backgroundColor: Colors.THEME
-  },
-  upperContainer: {
-    flex: 0.7,
-    alignItems: 'center'
   },
   noDataContainer: {
     flex: 1,
@@ -152,30 +160,17 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontFamily: Fonts.SEMI_BOLD
   },
-  listStyle: {
-    width: '95%',
-    marginTop: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: Colors.WHITE
-  },
   headerContainer: {
+    top: 0,
     height: 50,
     width: '100%',
+    borderWidth: 2,
+    borderRadius: 8,
+    position: 'absolute',
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 2,
+    borderColor: Colors.WHITE,
     justifyContent: 'space-between',
-    borderBottomColor: Colors.WHITE,
-  },
-  dataContainer: {
-    height: 50,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    justifyContent: 'space-between',
-    borderBottomColor: Colors.WHITE,
   },
   headerTxt: {
     fontSize: 14,
@@ -209,9 +204,6 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontFamily: Fonts.SEMI_BOLD
   },
-  lowerContainer: {
-    flex: 0.3,
-  },
   textStyle: {
     marginTop: 5,
     fontSize: 14,
@@ -219,5 +211,44 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontFamily: Fonts.SEMI_BOLD,
     textDecorationLine: 'underline',
+  },
+  rowContainer: {
+    height: 50,
+    borderWidth: 1,
+    marginBottom: 5,
+    borderRadius: 8,
+    width: width - 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: Colors.WHITE,
+    backgroundColor: Colors.THEME,
+    justifyContent: 'space-between',
+  },
+  calcContainer: {
+    width,
+    bottom: 0,
+    height: 180,
+    paddingLeft: 20,
+    borderTopWidth: 5,
+    position: 'absolute',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    borderTopColor: Colors.WHITE,
+    backgroundColor: Colors.THEME,
+  },
+  deleteBtn: {
+    flex: 1,
+    height: 50,
+    borderRadius: 8,
+    marginBottom: 5,
+    paddingLeft: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  deleteIcon: {
+    width: 30,
+    height: 30,
+    marginRight: 30
   }
 })
