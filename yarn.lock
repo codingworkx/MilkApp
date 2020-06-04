@@ -5176,6 +5176,11 @@ react-native-eventemitter@^0.0.1:
   resolved "https://registry.yarnpkg.com/react-native-eventemitter/-/react-native-eventemitter-0.0.1.tgz#c9250a1ae2c61a44fe731ffe1463f506294b80be"
   integrity sha1-ySUKGuLGGkT+cx/+FGP1BilLgL4=
 
+react-native-navigation-hooks@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-navigation-hooks/-/react-native-navigation-hooks-6.0.2.tgz#805e1d6365b66991ef4a47044087198eb743fc68"
+  integrity sha512-pSB/UVWlmm5gFYnBhlP7hpx93Hn/BPaBAC+LxjABvWQMhOPFheyEESTEMYd5AfA8bRnDZ3x68/tUzwcbQzbtBg==
+
 react-native-navigation@^6.5.0:
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-6.5.0.tgz#8a1307d60d2a58682fd6f6156f3a31a945e259ff"

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Navigation } from 'react-native-navigation';
 import firestore from '@react-native-firebase/firestore';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, Keyboard } from 'react-native';
+import { useNavigationButtonPress } from 'react-native-navigation-hooks'
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, Keyboard, Alert } from 'react-native';
 
 //custom imports below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
+import LocalImages from '../utils/localImages';
 import { ShowMessage } from '../utils/commonMethods';
-import { Navigation } from 'react-native-navigation';
-import { useSelector } from 'react-redux';
 
 class State {
   name: string = '';
@@ -24,6 +26,36 @@ export default function EditVendor({ componentId, address_p, name_p, number_p, v
   const { name, number, address } = values;
 
   const { uid } = useSelector((state: any) => state.userDataReducer);
+
+  useNavigationButtonPress(e => {
+    if (e.buttonId === 'delete_btn' && vendor_key && vendor_key.length > 0) {
+      Alert.alert(
+        "Delete",
+        "Are you sure you want to delete this vendor?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => console.log("Cancel Pressed"),
+          },
+          {
+            text: "YES", onPress: () => {
+              firestore().collection(`${uid}-Vendors`).doc(vendor_key).delete()
+                .then(function () {
+                  ShowMessage("Vendor Deleted Successfully!");
+                  Navigation.pop(componentId);
+                }).catch(function () {
+                  ShowMessage("Please try again!");
+                });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      ShowMessage("Please try again!");
+    }
+  }, componentId)
 
   const updateFields = (key: string, value: any) => {
     setValues({
@@ -123,7 +155,11 @@ EditVendor.options = {
       alignment: 'center',
       fontFamily: Fonts.BOLD,
     },
-    background: { color: Colors.THEME }
+    background: { color: Colors.THEME },
+    rightButtons: [{
+      id: 'delete_btn',
+      icon: LocalImages.DELETE_ICON
+    }]
   }
 }
 
