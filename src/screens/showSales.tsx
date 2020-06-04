@@ -1,20 +1,58 @@
 import React from 'react';
 import moment from 'moment';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { useSelector } from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, Alert } from 'react-native';
 
 //custom imprts below
 import Fonts from '../utils/fonts';
 import Colors from '../utils/colors';
 import LocalImages from '../utils/localImages';
+import { ShowMessage } from '../utils/commonMethods';
 
 const { width } = Dimensions.get('window');
 
 export default function ShowSales({ data, dairy_rate, commission }: any) {
-  console.log("data", data)
+  const [listData, setListData] = React.useState(data);
+  const { vendor_key } = useSelector((state: any) => state.userDataReducer);
 
-  if (!data || data.length === 0) {
+  const showAlert = (item: any) => {
+    Alert.alert(
+      "Delete",
+      "Are you sure you want to delete this entry?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => console.log("Cancel Pressed"),
+        },
+        { text: "YES", onPress: () => deleteEntry(item) }
+      ],
+      { cancelable: false }
+    );
+  }
+
+  const deleteEntry = (item: any) => {
+    if (item) {
+      firestore().collection(`${vendor_key}-Samples`).doc(item.id).delete()
+        .then(function () {
+          let newData = [...listData];
+          let index = listData.findIndex((a: any) => a.id === item.id);
+          if (index > -1) {
+            newData.splice(index, 1);
+          }
+          setListData([...newData]);
+          ShowMessage("Record Deleted Successfully!");
+        }).catch(function () {
+          ShowMessage("Please try again!");
+        });
+    } else {
+      ShowMessage("Please try again!");
+    }
+  }
+
+  if (!listData || listData.length === 0) {
     return (
       <View style={styles.noDataContainer}>
         <Text style={styles.noDataTxt}>{"No Data, Please Check Selected Dates."}</Text>
@@ -67,7 +105,10 @@ export default function ShowSales({ data, dairy_rate, commission }: any) {
   const renderDeleteBtn = (rowData: any, rowMap: any) => {
     const { item } = rowData;
     return (
-      <TouchableOpacity style={styles.deleteBtn} onPress={() => rowMap[item.id].closeRow()}>
+      <TouchableOpacity style={styles.deleteBtn} onPress={() => {
+        rowMap[item.id].closeRow();
+        showAlert(item);
+      }}>
         <Image
           resizeMode="contain"
           resizeMethod="resize"
@@ -79,18 +120,18 @@ export default function ShowSales({ data, dairy_rate, commission }: any) {
   }
 
   const renderCalculations = () => {
-    let sample_total = data.reduce(function (total: any, currentValue: any) {
+    let sample_total = listData.reduce(function (total: any, currentValue: any) {
       return total + (+currentValue.final_value);
     }, 0);
-    let quantity_total = data.reduce(function (total: any, currentValue: any) {
+    let quantity_total = listData.reduce(function (total: any, currentValue: any) {
       return total + (+currentValue.quantity);
     }, 0);
 
-    if (data && data.length > 0) {
+    if (listData && listData.length > 0) {
       let final_sample = sample_total + sample_total / 2,
         sample_by_qty = final_sample / quantity_total,
         qty_sub_sample = quantity_total + sample_by_qty,
-        final_rate = qty_sub_sample * (+dairy_rate + +commission);
+        final_rate: any = (qty_sub_sample * (+dairy_rate + +commission)).toFixed(2);
       if (final_rate < 0) {
         final_rate = -final_rate;
       }
@@ -112,7 +153,7 @@ export default function ShowSales({ data, dairy_rate, commission }: any) {
     <View style={styles.container}>
       {renderHeader()}
       <SwipeListView
-        data={data}
+        data={listData}
         useFlatList={true}
         rightOpenValue={-100}
         disableRightSwipe={true}
